@@ -67,7 +67,7 @@ function App() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Point-Time Schedule Calculator</h1>
+      <h1>Precision Schedule Calculator</h1>
       
       {/* Input for base time */}
       <div>
