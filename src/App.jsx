@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 function App() {
-  const [baseTime, setBaseTime] = useState("15:10"); // Base time from user (like B3)
+  const [baseTime, setBaseTime] = useState("15:10"); // Base time from user (in 24-hour format)
 
   // Task data: Task Name, E, and F values from your dataset
   const tasks = [
@@ -45,8 +45,8 @@ function App() {
 
   // Function to calculate start and end times based on base time and duration
   const calculateTimes = (baseTime, E, F) => {
-    const startTime = addMinutes(baseTime, F); // G4 formula
-    const endTime = addMinutes(baseTime, E);   // H4 formula
+    const startTime = addMinutes(baseTime, E); // Reversed: Add E for START (D-)
+    const endTime = addMinutes(baseTime, F);   // Reversed: Add F for END (D-)
     return { startTime, endTime, timeTaken: `${E - F} mins` }; // Time Taken (K4)
   };
 
@@ -56,7 +56,7 @@ function App() {
       
       {/* Input for base time */}
       <div>
-        <label>Base Time (ATA): </label>
+        <label>Base Time (like B3): </label>
         <input 
           type="time" 
           value={baseTime} 
@@ -92,4 +92,3 @@ function App() {
 }
 
 export default App;
-
