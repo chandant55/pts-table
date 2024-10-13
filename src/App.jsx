@@ -2,37 +2,37 @@
 import React, { useState } from "react";
 
 function App() {
-  const [baseHours, setBaseHours] = useState(0);  // Default hours (00)
-  const [baseMinutes, setBaseMinutes] = useState(0); // Default minutes (00)
+  const [baseHours, setBaseHours] = useState(5);  // Default hours (5 for 5:30)
+  const [baseMinutes, setBaseMinutes] = useState(30); // Default minutes (30 for 5:30)
 
-  // Task data: Task Name, E, and F values from your dataset
+  // Task data with E and F values
   const tasks = [
-    { task: "Doors Open", E: 0, F: 3 },
-    { task: "Catering", E: 11, F: 15 },
-    { task: "Cleaning", E: 7, F: 18 },
-    { task: "Passengers Deplaned", E: 6, F: 19 },
-    { task: "Engineering (Clearance)", E: 10, F: 20 },
+    { task: "Doors Open", E: 3, F: 3 },
+    { task: "Catering", E: 4, F: 15 },
+    { task: "Cleaning", E: 11, F: 18 },
+    { task: "Passengers Deplaned", E: 3, F: 8 },
+    { task: "Engineering (Clearance)", E: 3, F: 12 },
     { task: "Cabin Crew Reported at Aircraft", E: -15, F: -15 },
-    { task: "Security Checks", E: 6, F: 17 },
-    { task: "Pilots Onboard", E: 0, F: 10 },
-    { task: "Catering Handover", E: 0, F: 17 },
-    { task: "Boarding Clearance", E: 0, F: 18 },
-    { task: "Passengers Boarding", E: 15, F: 33 },
-    { task: "GNS Notification to aircraft", E: 1, F: 28 },
-    { task: "Engg. Paperwork completed", E: 0, F: 36 },
-    { task: "All Paperwork completed", E: 0, F: 36 },
-    { task: "Ground staff Offboard", E: 0, F: 36 },
-    { task: "Doors Closed", E: 0, F: 37 },
+    { task: "Security Checks", E: 11, F: 17 },
+    { task: "Pilots Onboard", E: 10, F: 10 },
+    { task: "Catering Handover", E: 17, F: 17 },
+    { task: "Boarding Clearance", E: 18, F: 18 },
+    { task: "Passengers Boarding", E: 18, F: 33 },
+    { task: "GNS Notification to aircraft", E: 27, F: 28 },
+    { task: "Engg. Paperwork completed", E: 36, F: 36 },
+    { task: "All Paperwork completed", E: 36, F: 36 },
+    { task: "Ground staff Offboard", E: 36, F: 36 },
+    { task: "Doors Closed", E: 37, F: 37 },
     { task: "Chocks on", E: 0, F: 0 },
     { task: "Fuel Bowser Reporting", E: 0, F: 0 },
-    { task: "Bag/Cargo Offload", E: 11, F: 13 },
-    { task: "Fuelling", E: 21, F: 25 },
-    { task: "Bag/Cargo Loading", E: 15, F: 28 },
-    { task: "GNS Bag Offload", E: 7, F: 35 },
-    { task: "Hold Closed", E: 0, F: 35 },
-    { task: "Engineers Ready to Pushback", E: 0, F: 37 },
-    { task: "Tow/Tractor Connected", E: 0, F: 37 },
-    { task: "Chocks off", E: 0, F: 40 }
+    { task: "Bag/Cargo Offload", E: 2, F: 11 },
+    { task: "Fuelling", E: 4, F: 21 },
+    { task: "Bag/Cargo Loading", E: 13, F: 15 },
+    { task: "GNS Bag Offload", E: 28, F: 35 },
+    { task: "Hold Closed", E: 35, F: 35 },
+    { task: "Engineers Ready to Pushback", E: 37, F: 37 },
+    { task: "Tow/Tractor Connected", E: 37, F: 37 },
+    { task: "Chocks off", E: 40, F: 40 },
   ];
 
   // Helper function to add minutes to a time string (HH:mm)
@@ -50,26 +50,11 @@ function App() {
     return `${String(newHours).padStart(2, "0")}:${String(newMinutes).padStart(2, "0")}`;
   };
 
-  // Helper function to calculate the difference between two time strings (HH:mm)
-  const calculateTimeDifference = (start, end) => {
-    const [startHours, startMinutes] = start.split(":").map(Number);
-    const [endHours, endMinutes] = end.split(":").map(Number);
-
-    const startTotalMinutes = startHours * 60 + startMinutes;
-    const endTotalMinutes = endHours * 60 + endMinutes;
-
-    const timeDifference = endTotalMinutes - startTotalMinutes;
-
-    // Ensure positive time difference and return in minutes format
-    return Math.abs(timeDifference);
-  };
-
   // Function to calculate start and end times based on base time and task's E and F values
   const calculateTimes = (baseTime, E, F) => {
-    const startTime = addMinutes(baseTime, F); // START (D-) calculation based on F
-    const endTime = addMinutes(baseTime, E);   // END (D-) calculation based on E
-    const timeTaken = calculateTimeDifference(startTime, endTime); // Ensure positive time difference
-    return { startTime, endTime, timeTaken: `${timeTaken} mins` };
+    const startTime = addMinutes(baseTime, E); // START time calculation based on E
+    const endTime = addMinutes(baseTime, F);   // END time calculation based on F
+    return { startTime, endTime };
   };
 
   // Combine hours and minutes into HH:mm format
@@ -120,18 +105,16 @@ function App() {
             <th>Task</th>
             <th>START (D-)</th>
             <th>END (D-)</th>
-            <th>Time Taken</th>
           </tr>
         </thead>
         <tbody>
           {tasks.map((task, index) => {
-            const { startTime, endTime, timeTaken } = calculateTimes(baseTime, task.E, task.F);
+            const { startTime, endTime } = calculateTimes(baseTime, task.E, task.F);
             return (
               <tr key={index}>
                 <td>{task.task}</td>
                 <td>{startTime}</td>
                 <td>{endTime}</td>
-                <td>{timeTaken}</td>
               </tr>
             );
           })}
