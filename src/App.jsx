@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import TimePicker from 'react-time-picker';  // Import the TimePicker component
 
 function App() {
-  const [baseTime, setBaseTime] = useState("00:00"); // Base time from user (in 24-hour format)
+  const [baseHours, setBaseHours] = useState(0);  // Default hours (00)
+  const [baseMinutes, setBaseMinutes] = useState(0); // Default minutes (00)
 
   // Task data: Task Name, E, and F values from your dataset
   const tasks = [
@@ -38,7 +38,13 @@ function App() {
   // Helper function to add minutes to a time string (HH:mm)
   const addMinutes = (time, minsToAdd) => {
     const [hours, minutes] = time.split(":").map(Number);
-    const totalMinutes = hours * 60 + minutes + minsToAdd;
+    let totalMinutes = hours * 60 + minutes + minsToAdd;
+
+    // Handle negative time (roll back to previous day)
+    while (totalMinutes < 0) {
+      totalMinutes += 24 * 60; // Add 24 hours worth of minutes
+    }
+
     const newHours = Math.floor(totalMinutes / 60) % 24;
     const newMinutes = totalMinutes % 60;
     return `${String(newHours).padStart(2, "0")}:${String(newMinutes).padStart(2, "0")}`;
@@ -66,22 +72,49 @@ function App() {
     return { startTime, endTime, timeTaken: `${timeTaken} mins` };
   };
 
+  // Combine hours and minutes into HH:mm format
+  const baseTime = `${String(baseHours).padStart(2, "0")}:${String(baseMinutes).padStart(2, "0")}`;
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Precision Schedule Calculator</h1>
       
       {/* Input for base time */}
-      <div>
-        <label>Base Time (like B3): </label>
-        <TimePicker
-          onChange={(value) => setBaseTime(value || "00:00")}
-          value={baseTime}
-          disableClock={true}
-          format="HH:mm"   // This enforces 24-hour format for the time picker
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ marginRight: "10px" }}>Base Time (ATA): </label>
+        <input
+          type="number"
+          value={baseHours}
+          onChange={(e) => setBaseHours(Math.max(0, Math.min(23, parseInt(e.target.value))))}
+          min="0"
+          max="23"
+          style={{ width: "50px", marginRight: "5px" }}
+        />{" "}
+        :
+        <input
+          type="number"
+          value={baseMinutes}
+          onChange={(e) => setBaseMinutes(Math.max(0, Math.min(59, parseInt(e.target.value))))}
+          min="0"
+          max="59"
+          style={{ width: "50px", marginLeft: "5px" }}
         />
       </div>
 
-      <table border={1} cellPadding="10" style={{ marginTop: "20px" }}>
+      {/* Reset time button */}
+      <div style={{ marginBottom: "20px" }}>
+        <button
+          style={{ padding: "8px 16px", backgroundColor: "#4CAF50", color: "white", border: "none", cursor: "pointer" }}
+          onClick={() => {
+            setBaseHours(0);
+            setBaseMinutes(0);
+          }}
+        >
+          Reset Time to 00:00
+        </button>
+      </div>
+
+      <table border={1} cellPadding="10" style={{ marginTop: "20px", width: "100%", textAlign: "left" }}>
         <thead>
           <tr>
             <th>Task</th>
