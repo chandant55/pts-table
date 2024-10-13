@@ -56,7 +56,7 @@ function App() {
       
       {/* Input for base time */}
       <div>
-        <label>Base Time (like B3): </label>
+        <label>Base Time (ATA): </label>
         <input 
           type="time" 
           value={baseTime} 
