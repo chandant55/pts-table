@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 function App() {
-  const [baseTime, setBaseTime] = useState("15:10"); // Base time from user (in 24-hour format)
+  const [baseTime, setBaseTime] = useState("00:00"); // Base time from user (in 24-hour format)
 
   // Task data: Task Name, E, and F values from your dataset
   const tasks = [
@@ -67,11 +67,11 @@ function App() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Time Schedule Calculator</h1>
+      <h1>Point-Time Schedule Calculator</h1>
       
       {/* Input for base time */}
       <div>
-        <label>Base Time (like B3): </label>
+        <label>Base Time (ATA): </label>
         <input 
           type="time" 
           value={baseTime} 
