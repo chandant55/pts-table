@@ -43,11 +43,26 @@ function App() {
     return `${String(newHours).padStart(2, "0")}:${String(newMinutes).padStart(2, "0")}`;
   };
 
+  // Helper function to calculate the difference between two time strings (HH:mm)
+  const calculateTimeDifference = (start, end) => {
+    const [startHours, startMinutes] = start.split(":").map(Number);
+    const [endHours, endMinutes] = end.split(":").map(Number);
+
+    const startTotalMinutes = startHours * 60 + startMinutes;
+    const endTotalMinutes = endHours * 60 + endMinutes;
+
+    const timeDifference = endTotalMinutes - startTotalMinutes;
+
+    // Ensure positive time difference and return in minutes format
+    return Math.abs(timeDifference);
+  };
+
   // Function to calculate start and end times based on base time and duration
   const calculateTimes = (baseTime, E, F) => {
-    const startTime = addMinutes(baseTime, E); // Reversed: Add E for START (D-)
-    const endTime = addMinutes(baseTime, F);   // Reversed: Add F for END (D-)
-    return { startTime, endTime, timeTaken: `${E - F} mins` }; // Time Taken (K4)
+    const startTime = addMinutes(baseTime, E); // START (D-) calculation
+    const endTime = addMinutes(baseTime, F);   // END (D-) calculation
+    const timeTaken = calculateTimeDifference(startTime, endTime); // Ensure positive time difference
+    return { startTime, endTime, timeTaken: `${timeTaken} mins` };
   };
 
   return (
